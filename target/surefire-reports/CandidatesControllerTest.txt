@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: CandidatesControllerTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 36.509 sec <<< FAILURE! - in CandidatesControllerTest
+checkConditionsTest(CandidatesControllerTest)  Time elapsed: 10.764 sec  <<< FAILURE!
+java.lang.AssertionError: expected:<200> but was:<500>
+	at CandidatesControllerTest.checkConditionsTest(CandidatesControllerTest.java:45)
+
+checkEmailUnicityTest(CandidatesControllerTest)  Time elapsed: 10.28 sec  <<< FAILURE!
+java.lang.AssertionError: expected:<200> but was:<500>
+	at CandidatesControllerTest.checkEmailUnicityTest(CandidatesControllerTest.java:31)
+

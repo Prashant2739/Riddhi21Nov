@@ -1,0 +1,245 @@
+select 
+	attch.sfid as documentId, attch.name as documentName,attch.createddate as documentDate,cnt.sfid as contactId,cnt.tr1__language__c contactSkills,cnt.name as contactName,emphist.sfid as employmentId,emphist.tr1__title__c,edhist.sfid,edhist.tr1__degreename__c  
+	
+from 
+	salesforce.tr1__employmenthistory__c emphist,salesforce.contact cnt,salesforce.Attachment attch,salesforce.tr1__educationhistory__c edhist
+ where 
+	emphist.tr1__enddate__c = 
+		(select max(emphist1.tr1__enddate__c) 
+			from salesforce.tr1__employmenthistory__c emphist1,salesforce.contact cnt2  
+			where cnt2.sfid = emphist1.tr1__contact__c 
+			and cnt2.email = 'a.l.west@randatmail.com' 
+		)
+
+and attch.createddate = 
+	(select max(attch1.createddate) 
+		from 
+			salesforce.Attachment attch1,salesforce.contact cnt1  
+		where 
+			cnt1.sfid = attch1.parentid and cnt1.email = 'a.l.west@randatmail.com' 
+	)
+and edhist.tr1__enddate__c=
+		(select max(edhist1.tr1__enddate__c) 
+			from salesforce.tr1__educationhistory__c edhist1,salesforce.contact cnt3  
+			where cnt3.sfid = edhist1.tr1__contact__c 
+			and cnt3.email = 'a.l.west@randatmail.com')
+and 
+cnt.sfid = attch.parentid and
+cnt.sfid = emphist.tr1__contact__c and 
+cnt.email = 'a.l.west@randatmail.com' and 
+cnt.sfid = edhist.tr1__contact__c
+
+
+------------------
+
+
+select 
+    attch.sfid, attch.name,attch.createddate,cnt.sfid,cnt.tr1__language__c,cnt.name,emphist.sfid,emphist.tr1__title__c,
+    edhist.sfid,edhist.tr1__degreename__c 
+from 
+              salesforce.contact cnt
+left join salesforce.tr1__employmenthistory__c emphist on cnt.sfid = emphist.tr1__contact__c and emphist.tr1__enddate__c = 
+                                (select max(emphist1.tr1__enddate__c) 
+                                                from salesforce.tr1__employmenthistory__c emphist1,salesforce.contact cnt2  
+                                                where cnt2.sfid = emphist1.tr1__contact__c 
+                                                and cnt2.email = 'a.l.west@randatmail.com' 
+                                )
+left join salesforce.tr1__educationhistory__c edhist on cnt.sfid = edhist.tr1__contact__c and edhist.tr1__enddate__c=
+                                (select max(edhist1.tr1__enddate__c) 
+                                                from salesforce.tr1__educationhistory__c edhist1,salesforce.contact cnt3  
+                                                where cnt3.sfid = edhist1.tr1__contact__c 
+                                                and cnt3.email = 'a.l.west@randatmail.com')
+left join salesforce.Attachment attch on cnt.sfid = attch.parentid and attch.createddate = 
+                (select max(attch1.createddate) 
+                                from 
+                                                salesforce.Attachment attch1,salesforce.contact cnt1  
+                                where 
+                                                cnt1.sfid = attch1.parentid and cnt1.email = 'a.l.west@randatmail.com' 
+                )
+
+
+
+----------------
+working
+
+select 
+	attch.sfid as documentId , attch.name as documentName,attch.createddate as dateAdded,cnt.sfid as contactId,cnt.tr1__language__c as contactSkills,cnt.name as contactName,emphist.sfid as employmentId,emphist.tr1__title__c as employmentName,edhist.sfid as educationID,edhist.tr1__degreename__c as educationName  
+	
+from 
+	salesforce.tr1__employmenthistory__c emphist,salesforce.contact cnt,salesforce.Attachment attch,salesforce.tr1__educationhistory__c edhist
+ where 
+	emphist.tr1__enddate__c = 
+		(select max(emphist1.tr1__enddate__c) 
+			from salesforce.tr1__employmenthistory__c emphist1,salesforce.contact cnt2  
+			where cnt2.sfid = emphist1.tr1__contact__c 
+			and upper(cnt2.email) = ? 
+		)
+
+and attch.createddate = 
+	(select max(attch1.createddate) 
+		from 
+			salesforce.Attachment attch1,salesforce.contact cnt1  
+		where 
+			cnt1.sfid = attch1.parentid and upper(cnt1.email) = ? 
+	)
+and edhist.tr1__enddate__c=
+		(select max(edhist1.tr1__enddate__c) 
+			from salesforce.tr1__educationhistory__c edhist1,salesforce.contact cnt3  
+			where cnt3.sfid = edhist1.tr1__contact__c 
+			and upper(cnt3.email) = ?)
+and cnt.sfid = attch.parentid and
+cnt.sfid = emphist.tr1__contact__c and Upper(cnt.email) = ?
+and cnt.sfid = edhist.tr1__contact__c
+
+
+
+
+=====================================================
+11/16/2018 ---- from daoimpl deleted the 
+
+select 
+			attch.sfid as documentId , attch.name as documentName,attch.createddate as dateAdded,cnt.sfid as contactId,cnt.tr1__language__c as contactSkills,cnt.name as contactName,emphist.sfid as employmentId,emphist.tr1__title__c as employmentName,edhist.sfid as educationID,edhist.tr1__degreename__c as educationName   
+			
+			from 
+				salesforce.tr1__employmenthistory__c emphist,salesforce.contact cnt,salesforce.Attachment attch,salesforce.tr1__educationhistory__c edhist
+			 where 
+				emphist.tr1__startdate__c =  
+					(select max(emphist1.tr1__startdate__c) 
+						from salesforce.tr1__employmenthistory__c emphist1,salesforce.contact cnt2 
+						where cnt2.sfid = emphist1.tr1__contact__c  
+						and upper(cnt2.email) = 'YO@MAILINATOR.COM' HAVING  (max(emphist1.tr1__startdate__c) IS NOT NULL) OR
+                      (max(emphist1.tr1__startdate__c) <> '') 
+					) 
+			
+			and attch.createddate = 
+				(select max(attch1.createddate) 
+					from 
+						salesforce.Attachment attch1,salesforce.contact cnt1   
+					where  
+						cnt1.sfid = attch1.parentid and upper(cnt1.email) = 'YO@MAILINATOR.COM'  
+				) 
+			and edhist.tr1__enddate__c=
+					(select max(edhist1.tr1__enddate__c) 
+						from salesforce.tr1__educationhistory__c edhist1,salesforce.contact cnt3  
+						where cnt3.sfid = edhist1.tr1__contact__c 
+						and upper(cnt3.email) = 'YO@MAILINATOR.COM')
+			and cnt.sfid = attch.parentid and
+			cnt.sfid = emphist.tr1__contact__c and Upper(cnt.email) = 'YO@MAILINATOR.COM'
+			and cnt.sfid = edhist.tr1__contact__c
+			
+			======================================================================
+			
+			
+			
+			
+			select 
+                     attch.sfid as documentId , attch.name as documentName,attch.createddate as dateAdded,cnt.sfid as contactId,cnt.tr1__language__c as contactSkills,cnt.name as contactName,emphist.sfid as employmentId,emphist.tr1__title__c as employmentName,edhist.sfid as educationID,edhist.tr1__degreename__c as educationName   
+                     
+                     from 
+                           salesforce.tr1__employmenthistory__c emphist,salesforce.contact cnt,salesforce.Attachment attch,salesforce.tr1__educationhistory__c edhist
+                     where 
+                           emphist.tr1__startdate__c =  
+                                  (select isnull(max(emphist1.tr1__startdate__c), '1970-01-01')
+                                         from salesforce.tr1__employmenthistory__c emphist1,salesforce.contact cnt2 
+                                         where cnt2.sfid = emphist1.tr1__contact__c 
+                                         and upper(cnt2.email) = 'YO@MAILINATOR.COM' HAVING  (max(emphist1.tr1__startdate__c) IS NOT NULL) OR
+                      (max(emphist1.tr1__startdate__c) <> '')
+                                  ) 
+                       and emphist.tr1__startdate__c IS NOT NULL
+                     
+                     and attch.createddate = 
+                           (select max(attch1.createddate) 
+                                  from 
+                                         salesforce.Attachment attch1,salesforce.contact cnt1   
+                                  where  
+                                         cnt1.sfid = attch1.parentid and upper(cnt1.email) = 'YO@MAILINATOR.COM'  
+                           ) 
+                     and edhist.tr1__enddate__c=
+                                  (select max(Ltrim(edhist1.tr1__enddate__c))
+                                         from salesforce.tr1__educationhistory__c edhist1,salesforce.contact cnt3  
+                                         where cnt3.sfid = edhist1.tr1__contact__c 
+                                         and upper(cnt3.email) = 'YO@MAILINATOR.COM' HAVING  (max(edhist1.tr1__enddate__c) IS NOT NULL) OR
+                      (max(edhist1.tr1__enddate__c) <> '')
+                      )
+                      
+                      and edhist.tr1__enddate__c IS NOT NULL
+                     and cnt.sfid = attch.parentid and
+                     cnt.sfid = emphist.tr1__contact__c and upper(cnt.email) = 'YO@MAILINATOR.COM'
+                     and cnt.sfid = edhist.tr1__contact__c 
+                     
+                     
+     =================================================
+     
+     
+     
+     select 
+                     attch.sfid as documentId , attch.name as documentName,attch.createddate as dateAdded,cnt.sfid as contactId,cnt.tr1__language__c as contactSkills,cnt.name as contactName,emphist.sfid as employmentId,emphist.tr1__title__c as employmentName,edhist.sfid as educationID,edhist.tr1__degreename__c as educationName   
+                     
+                     from 
+                          salesforce.contact cnt
+                      left join  salesforce.tr1__employmenthistory__c emphist on cnt.sfid = emphist.tr1__contact__c and emphist.tr1__startdate__c IS NOT NULL and
+                           emphist.tr1__startdate__c =  
+					                                  (select max((emphist1.tr1__startdate__c))
+					                                         from salesforce.tr1__employmenthistory__c emphist1,salesforce.contact cnt2 
+					                                         where cnt2.sfid = emphist1.tr1__contact__c 
+					                                         and upper(cnt2.email) = 'YO@MAILINATOR.COM' HAVING  (max(emphist1.tr1__startdate__c) IS NOT NULL) OR
+					                      					(max(emphist1.tr1__startdate__c) <> ''))
+                     left join salesforce.Attachment attch on cnt.sfid = attch.parentid and 
+                      attch.createddate = 
+                           (select max(attch1.createddate) 
+                                  from 
+                                         salesforce.Attachment attch1,salesforce.contact cnt1   
+                                  where  
+                                         cnt1.sfid = attch1.parentid and upper(cnt1.email) = 'YO@MAILINATOR.COM'  
+                           ) 
+                      left join salesforce.tr1__educationhistory__c edhist on cnt.sfid = edhist.tr1__contact__c and     
+                      edhist.tr1__enddate__c=
+                                  (select max(Ltrim(edhist1.tr1__enddate__c))
+                                         from salesforce.tr1__educationhistory__c edhist1,salesforce.contact cnt3  
+                                         where cnt3.sfid = edhist1.tr1__contact__c 
+                                         and upper(cnt3.email) = 'YO@MAILINATOR.COM' HAVING  (max(edhist1.tr1__enddate__c) IS NOT NULL) OR
+                      (max(edhist1.tr1__enddate__c) <> '')) and edhist.tr1__enddate__c IS NOT NULL 
+                          
+                     where upper(cnt2.email) = 'YO@MAILINATOR.COM'
+                     
+                     =================================================
+                     
+                     
+                     
+                     select 
+                     attch.sfid as documentId , attch.name as documentName,attch.createddate as dateAdded,cnt.sfid as contactId,cnt.tr1__language__c as contactSkills,cnt.name as contactName,emphist.sfid as employmentId,emphist.tr1__title__c as employmentName,edhist.sfid as educationID,edhist.tr1__degreename__c as educationName   
+                     
+                     from 
+                          salesforce.contact cnt
+                      right join  salesforce.tr1__employmenthistory__c emphist on 
+                      
+                           emphist.tr1__startdate__c =  
+                                  (select max((emphist1.tr1__startdate__c))
+                                         from salesforce.tr1__employmenthistory__c emphist1,salesforce.contact cnt2 
+                                         where cnt2.sfid = emphist1.tr1__contact__c 
+                                         and upper(cnt2.email) = 'YO@MAILINATOR.COM' HAVING  (max(emphist1.tr1__startdate__c) IS NOT NULL) OR
+                      (max(emphist1.tr1__startdate__c) <> '')
+                                  )
+                     right join salesforce.Attachment attch on 
+                      attch.createddate = 
+                           (select max(attch1.createddate) 
+                                  from 
+                                         salesforce.Attachment attch1,salesforce.contact cnt1   
+                                  where  
+                                         cnt1.sfid = attch1.parentid and upper(cnt1.email) = 'YO@MAILINATOR.COM'  
+                           ) 
+                      right join salesforce.tr1__educationhistory__c edhist on      
+                      edhist.tr1__enddate__c=
+                                  (select max(Ltrim(edhist1.tr1__enddate__c))
+                                         from salesforce.tr1__educationhistory__c edhist1,salesforce.contact cnt3  
+                                         where cnt3.sfid = edhist1.tr1__contact__c 
+                                         and upper(cnt3.email) = 'YO@MAILINATOR.COM' HAVING  (max(edhist1.tr1__enddate__c) IS NOT NULL) OR
+                      (max(edhist1.tr1__enddate__c) <> '')
+                      )
+                     and cnt.sfid = attch.parentid and
+                     cnt.sfid = emphist.tr1__contact__c and upper(cnt.email) = 'YO@MAILINATOR.COM'
+                     and cnt.sfid = edhist.tr1__contact__c and emphist.tr1__startdate__c IS NOT NULL  and edhist.tr1__enddate__c IS NOT NULL
+                     
+			
+     
+			
